@@ -164,8 +164,8 @@ export const NamadaTransfer = ({
 
   return (
     <Panel className="min-h-[600px] rounded-sm flex flex-col flex-1 py-9">
-      <header className="flex flex-col text-yellow items-center text-center mb-8 gap-6">
-        {`${isSourceShielded ? "Shielded" : "Transparent"} Transfer Assets`}
+      <header className="text-yellow text-center mb-8 gap-6">
+        {`${isSourceShielded ? "Shielded" : "Transparent"} Transfer`}
       </header>
       <TransferModule
         source={{

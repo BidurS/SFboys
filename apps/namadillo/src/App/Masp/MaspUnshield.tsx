@@ -132,9 +132,7 @@ export const MaspUnshield = ({
 
   return (
     <Panel className="relative rounded-sm flex flex-col flex-1 pt-9">
-      <header className="flex flex-col text-yellow items-center text-center mb-8 gap-6">
-        Unshield Assets
-      </header>
+      <header className="text-center mb-8 gap-6">Unshield</header>
       <TransferModule
         source={{
           address: sourceAddress,

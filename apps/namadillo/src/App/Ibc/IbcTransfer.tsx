@@ -19,7 +19,6 @@ import { useEffect, useMemo, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { AssetWithAmountAndChain } from "types";
 import { useTransactionEventListener } from "utils";
-import { IbcTopHeader } from "./IbcTopHeader";
 
 interface IbcTransferProps {
   sourceAddress: string;
@@ -146,9 +145,7 @@ export const IbcTransfer = ({
 
   return (
     <div className="relative min-h-[600px]">
-      <header className="flex flex-col items-center text-center mb-8 gap-6">
-        <IbcTopHeader type="ibcToNam" isShielded={shielded} />
-      </header>
+      <header className="text-center mb-8 gap-6">IBC Deposit</header>
       <TransferModule
         source={{
           selectedAssetWithAmount,
