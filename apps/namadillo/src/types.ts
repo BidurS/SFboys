@@ -4,6 +4,7 @@ import {
   Asset as ChainRegistryAsset,
   IBCInfo,
 } from "@chain-registry/types";
+import { IbcTransition } from "@chain-registry/types/assetlist.schema";
 import { ValidatorStatus } from "@namada/indexer-client";
 import { ClaimRewardsMsgValue } from "@namada/sdk-multicore";
 import { Account, ChainKey, ExtensionKey } from "@namada/types";
@@ -93,6 +94,11 @@ export type SettingsStorage = {
 export type RpcStorage = {
   address: string;
   index: number;
+};
+
+export type SwapStorage = {
+  assetSymbolSell?: string;
+  assetSymbolBuy?: string;
 };
 
 export type Validator = Unique & {
@@ -222,6 +228,7 @@ export type Asset = ChainRegistryAsset;
 
 // Namada assets should always have address field defined
 export type NamadaAsset = Asset & { address: Address };
+export type NamadaIbcTransition = IbcTransition;
 
 export type AssetWithAmount = {
   asset: Asset;
@@ -305,6 +312,12 @@ export const namadaTransferStages = {
 
 // Defines the steps in the IBC <> Namada transfer progress for tracking transaction stages.
 export const ibcTransferStages = {
+  ShieldedOsmosisSwap: [
+    TransferStep.Sign,
+    TransferStep.IbcWithdraw,
+    TransferStep.WaitingConfirmation,
+    TransferStep.Complete,
+  ] as const,
   ShieldedToIbc: [
     TransferStep.Sign,
     TransferStep.IbcWithdraw,
@@ -398,9 +411,17 @@ export type IbcTransferTransactionData = BaseTransferTransaction & {
   destinationChainId: string;
 };
 
+export type OsmosisSwapTransactionData = BaseTransferTransaction & {
+  type: "ShieldedOsmosisSwap";
+  targetAsset: Asset;
+  minAmountOut: BigNumber;
+  refundTarget: string;
+};
+
 export type TransferTransactionData =
   | BaseTransferTransaction
-  | IbcTransferTransactionData;
+  | IbcTransferTransactionData
+  | OsmosisSwapTransactionData;
 
 export type PartialTransferTransactionData = Partial<TransferTransactionData> &
   Pick<TransferTransactionData, "type" | "chainId" | "asset">;

@@ -6,7 +6,7 @@ import {
   TxResponseProps,
   UnshieldingTransferProps,
 } from "@namada/sdk-multicore";
-import { Account } from "@namada/types";
+import { Account, OsmosisSwapMsgValue } from "@namada/types";
 import BigNumber from "bignumber.js";
 import { EncodedTxData, TransactionPair } from "lib/query";
 import { ChainSettings, GasConfig } from "types";
@@ -72,6 +72,19 @@ export type IbcTransfer = WebWorkerMessage<"ibc-transfer", IbcTransferPayload>;
 export type IbcTransferDone = WebWorkerMessage<
   "ibc-transfer-done",
   EncodedTxData<IbcTransferProps>
+>;
+
+type OsmosisSwapPayload = {
+  account: Account;
+  gasConfig: GasConfig;
+  props: OsmosisSwapMsgValue[];
+  chain: ChainSettings;
+  memo?: string;
+};
+export type OsmosisSwap = WebWorkerMessage<"osmosis-swap", OsmosisSwapPayload>;
+export type OsmosisSwapDone = WebWorkerMessage<
+  "osmosis-swap-done",
+  EncodedTxData<OsmosisSwapMsgValue>
 >;
 
 type GenerateIbcShieldingMemoPayload = {

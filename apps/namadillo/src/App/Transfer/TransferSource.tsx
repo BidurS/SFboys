@@ -1,18 +1,19 @@
 import { Asset } from "@chain-registry/types";
 import { AmountInput, Tooltip } from "@namada/components";
 import { copyToClipboard, shortenAddress } from "@namada/utils";
+import { AvailableAmountFooter } from "App/Common/AvailableAmountFooter";
+import { SelectedAsset } from "App/Common/SelectedAsset";
+import { TokenAmountCard } from "App/Common/TokenAmountCard";
 import BigNumber from "bignumber.js";
 import clsx from "clsx";
 import { wallets } from "integrations";
 import { useState } from "react";
 import { GoCheck } from "react-icons/go";
 import { Address } from "types";
+import { amountMaxDecimalPlaces } from "utils/assets";
 import namadaShieldedIcon from "./assets/namada-shielded.svg";
 import namadaTransparentIcon from "./assets/namada-transparent.svg";
-import { AvailableAmountFooter } from "./AvailableAmountFooter";
 import { isShieldedAddress, isTransparentAddress } from "./common";
-import { SelectedAsset } from "./SelectedAsset";
-import { TokenAmountCard } from "./TokenAmountCard";
 
 export type TransferSourceProps = {
   isLoadingAssets?: boolean;
@@ -28,17 +29,6 @@ export type TransferSourceProps = {
   openAssetSelector?: () => void;
   openProviderSelector?: () => void;
   onChangeAmount?: (amount: BigNumber | undefined) => void;
-};
-
-const amountMaxDecimalPlaces = (asset?: Asset): number | undefined => {
-  if (typeof asset !== "undefined") {
-    for (const { denom, exponent } of asset.denom_units) {
-      if (denom === asset.display) {
-        return exponent;
-      }
-    }
-  }
-  return undefined;
 };
 
 const getWalletIcon = (
