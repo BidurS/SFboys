@@ -27,7 +27,9 @@ import { useLocation } from "react-router-dom";
 import { Address } from "types";
 import namadaShieldedIcon from "./assets/namada-shielded.svg";
 import namadaTransparentIcon from "./assets/namada-transparent.svg";
+import semiTransparentEye from "./assets/semi-transparent-eye.svg";
 import shieldedEye from "./assets/shielded-eye.svg";
+import transparentEye from "./assets/transparent-eye.svg";
 import { CustomAddressForm } from "./CustomAddressForm";
 import { DestinationAddressModal } from "./DestinationAddressModal";
 import { SelectedWallet } from "./SelectedWallet";
@@ -124,13 +126,6 @@ export const TransferDestination = ({
       undefined
     : destinationAddress;
 
-  const isShieldedTransfer =
-    isShieldedNamAddress(sourceAddress ?? "") &&
-    isShieldedNamAddress(destinationAddress ?? "");
-  const isShieldingTransfer =
-    !isShieldedNamAddress(sourceAddress ?? "") &&
-    isShieldedNamAddress(destinationAddress ?? "");
-
   const sourceWallet =
     isNamadaAddress(destinationAddress || "") ? wallets.namada : wallets.keplr;
   const addressType =
@@ -147,6 +142,18 @@ export const TransferDestination = ({
       return alias ?? "";
     return "Custom";
   };
+  // Determine transaction type for eye icon
+  const isSourceShielded = isShieldedNamAddress(sourceAddress ?? "");
+  const isDestShielded = isShieldedNamAddress(destinationAddress ?? "");
+  const transactionType =
+    isSourceShielded && isDestShielded ? "shielded"
+    : !isSourceShielded && !isDestShielded ? "transparent"
+    : "semi-transparent";
+
+  const eyeIcon =
+    transactionType === "shielded" ? shieldedEye
+    : transactionType === "semi-transparent" ? semiTransparentEye
+    : transparentEye;
 
   return (
     <>
@@ -162,11 +169,11 @@ export const TransferDestination = ({
           <div>
             <div className="flex justify-between items-center mb-5">
               <h4 className="text-neutral-500">Destination</h4>
-              {(isShieldedTransfer || isShieldingTransfer) && (
+              {sourceAddress && destinationAddress && (
                 <div className="relative w-fit group/tooltip ml-auto">
                   <img
-                    src={shieldedEye}
-                    alt="Shielded Logo"
+                    src={eyeIcon}
+                    alt="Privacy Info"
                     className="w-5 mb-2 select-none cursor-pointer"
                   />
                   <ShieldedPropertiesTooltip
