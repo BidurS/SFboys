@@ -7,6 +7,7 @@ import {
   connectedWalletsAtom,
   getChainRegistryByChainName,
   namadaRegistryChainAssetsMapAtom,
+  SUPPORTED_ASSETS_MAP,
 } from "atoms/integrations";
 import { tokenPricesFamily } from "atoms/prices/atoms";
 import clsx from "clsx";
@@ -125,6 +126,7 @@ export const SelectToken = ({
     async (token: AssetWithAmountAndChain): Promise<void> => {
       // Check if current address is Keplr and if we need to connect to specific chain for this token
       const isIbcOrKeplrToken = !isNamadaAddress(sourceAddress);
+      const destinationIsIbcOrKeplrToken = !isNamadaAddress(destinationAddress);
       // only used for IBC tokens
       let newSourceAddress: string | undefined;
       try {
@@ -163,6 +165,19 @@ export const SelectToken = ({
           } finally {
             setIsConnectingKeplr(false);
           }
+        } else if (destinationIsIbcOrKeplrToken) {
+          // Because IbcWithdraw uses registry from KeplrWalletManager, we need to connect to
+          // the source chain of the selected asset. Otherwise channels may not be correct as
+          // ibcChannelsFamily relies on connected registry.
+          const chainName = [...SUPPORTED_ASSETS_MAP.entries()].find(
+            ([_, assetSymbols]) => {
+              return assetSymbols.includes(token.asset.symbol);
+            }
+          )?.[0];
+          invariant(chainName, "Chain name not found for selected asset");
+          const registry = getChainRegistryByChainName(chainName);
+          invariant(registry, "Chain registry not found for counterparty");
+          await connectToChainId(registry.chain.chain_id);
         }
 
         onSelect?.(token, newSourceAddress);

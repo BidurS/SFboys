@@ -20,6 +20,7 @@ import { determineTransferType } from "./utils";
 
 export const TransferLayout: React.FC = () => {
   const keplrWalletManager = new KeplrWalletManager();
+
   const userHasAccount = useUserHasAccount();
   const [sourceAddressUrl, setSourceAddressUrl] = useUrlState("source");
   const [destinationAddressUrl, setDestinationAddressUrl] =
@@ -59,12 +60,11 @@ export const TransferLayout: React.FC = () => {
 
   // Refetch shielded balance for MASP operations
   useEffect(() => {
-    if (transferType === "shield" || transferType === "unshield") {
-      refetchShieldedBalance();
-    }
+    if (["shield", "unshield"].includes(transferType)) refetchShieldedBalance();
   }, [transferType, refetchShieldedBalance]);
 
   // Validate source address - check if it's from keyring or Keplr
+  // If not it means the address is invalid at best, poisoned at worst.
   useEffect(() => {
     const validateSourceAddress = async (): Promise<void> => {
       if (!sourceAddressUrl || !userHasAccount || !accounts) return;
