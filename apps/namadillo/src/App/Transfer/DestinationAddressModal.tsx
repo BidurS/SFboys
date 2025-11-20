@@ -15,7 +15,11 @@ import { useCallback, useState } from "react";
 import { Address, Asset } from "types";
 import namadaShieldedIcon from "./assets/namada-shielded.svg";
 import namadaTransparentIcon from "./assets/namada-transparent.svg";
-import { isShieldedAddress, isTransparentAddress } from "./common";
+import {
+  isIbcAddress,
+  isShieldedAddress,
+  isTransparentAddress,
+} from "./common";
 
 export type ValidationError = {
   type: "invalid-format" | "unsupported-chain" | "empty";
@@ -66,6 +70,9 @@ export const DestinationAddressModal = ({
   // Dont display an address if it matches the source address
   const isSourceAddressMatch = (address: string): boolean =>
     address === sourceAddress;
+  const isSourceIbc = isIbcAddress(sourceAddress);
+  const filterNonIbcIfSourceIbc = (items: RecentAddress[]): RecentAddress[] =>
+    isSourceIbc ? items.filter((item) => item.type !== "ibc") : items;
 
   // Build your addresses options
   const addressOptions: AddressOption[] = [];
@@ -96,7 +103,7 @@ export const DestinationAddressModal = ({
       });
     }
   }
-  if (keplrAddress)
+  if (keplrAddress && !isSourceIbc) {
     addressOptions.push({
       id: "keplr",
       label: "Keplr Address",
@@ -107,11 +114,15 @@ export const DestinationAddressModal = ({
         : getChainImageUrl(getChainFromAddress(keplrAddress ?? "")),
       type: "keplr",
     });
+  }
+
   const addressOptionsAddresses = addressOptions.map((addr) => addr.address);
 
   // Build recent addresses options
-  const recentAddressOptions: AddressOption[] = recentAddresses
+  const filteredRecentAddresses = filterNonIbcIfSourceIbc(recentAddresses);
+  const recentAddressOptions: AddressOption[] = filteredRecentAddresses
     .filter((addresses) => !addressOptionsAddresses.includes(addresses.address))
+    .filter((addresses) => addresses.address !== sourceAddress)
     .map((recent) => ({
       id: `recent-${recent.address}`,
       label: recent.label || getAddressLabel(recent.address, recent.type),

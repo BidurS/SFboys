@@ -51,6 +51,8 @@ type TransferDestinationProps = {
   sourceAsset: Asset | undefined;
   onChangeAddress?: (address: Address) => void;
   onChangeMemo?: (address: string) => void;
+  isShielding?: boolean;
+  isUnshielding?: boolean;
 };
 
 export const TransferDestination = ({
@@ -68,6 +70,8 @@ export const TransferDestination = ({
   sourceAsset,
   onChangeAddress,
   onChangeMemo,
+  isShielding = false,
+  isUnshielding = false,
 }: TransferDestinationProps): JSX.Element => {
   const { data: accounts } = useAtomValue(allDefaultAccountsAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,6 +129,12 @@ export const TransferDestination = ({
     ) ?
       undefined
     : destinationAddress;
+
+  // Check if it's an internal shielding or unshielding transaction
+  const isInternalShieldingOrUnshielding =
+    (isShielding || isUnshielding) &&
+    isNamadaAddress(sourceAddress ?? "") &&
+    isNamadaAddress(destinationAddress ?? "");
 
   const sourceWallet =
     isNamadaAddress(destinationAddress || "") ? wallets.namada : wallets.keplr;
@@ -228,7 +238,7 @@ export const TransferDestination = ({
                         getChainFromAddress(destinationAddress ?? "")
                           ?.pretty_name
                       }
-                      className="w-7"
+                      className="w-10"
                     />
                     <div className="flex flex-col ml-4">
                       <div className="flex flex-col">
@@ -251,8 +261,7 @@ export const TransferDestination = ({
                 </button>
               }
             </div>
-
-            {customAddress && (
+            {(customAddress || isInternalShieldingOrUnshielding) && (
               <Stack gap={8}>
                 <CustomAddressForm memo={memo} onChangeMemo={onChangeMemo} />
               </Stack>
