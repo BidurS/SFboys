@@ -159,13 +159,21 @@ export const getButtonText = ({
   validationResult,
   availableAmountMinusFees,
   buttonTextErrors = {},
+  transactionType,
+  sourceAddress,
+  destinationAddress,
 }: {
   isSubmitting: boolean | undefined;
   submittingText?: string;
   validationResult: ValidationResult;
   availableAmountMinusFees: BigNumber | undefined;
   buttonTextErrors?: Partial<Record<ValidationResult, string>>;
+  transactionType: TransferType;
+  sourceAddress: string;
+  destinationAddress: string;
 }): string => {
+  const sourceIsShielded = isShieldedAddress(sourceAddress ?? "");
+  const destinationIsShielded = isShieldedAddress(destinationAddress ?? "");
   if (isSubmitting) {
     return "Submitting...";
   }
@@ -201,6 +209,21 @@ export const getButtonText = ({
   if (!availableAmountMinusFees) {
     return getText("Wallet amount not available");
   }
+
+  // Update CTA to match transaction type
+  if (sourceIsShielded && destinationIsShielded)
+    return getText("Shielded Transfer");
+  if (transactionType === "shield" || destinationIsShielded)
+    return getText("Shield");
+  if (
+    transactionType === "unshield" ||
+    (sourceIsShielded && !destinationIsShielded)
+  )
+    return getText("Unshield");
+  if (transactionType === "ibc-deposit") return getText("IBC Deposit");
+  if (transactionType === "ibc-withdraw") return getText("IBC Withdraw");
+  if (transactionType === "namada-transfer")
+    return getText("Transparent Transfer");
 
   return "Submit";
 };

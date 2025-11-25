@@ -4,6 +4,10 @@ import { IconTooltip } from "App/Common/IconTooltip";
 import { InlineError } from "App/Common/InlineError";
 import { params, routes } from "App/routes";
 import {
+  defaultShieldedAccountAtom,
+  defaultTransparentAccountAtom,
+} from "atoms/accounts";
+import {
   namadaShieldedAssetsAtom,
   namadaTransparentAssetsAtom,
 } from "atoms/balance";
@@ -32,7 +36,11 @@ import { TransferArrow } from "./TransferArrow";
 import { TransferDestination } from "./TransferDestination";
 import { TransferSource } from "./TransferSource";
 import { TransferModuleProps, ValidationResult } from "./types";
-import { getButtonText, validateTransferForm } from "./utils";
+import {
+  determineTransferType,
+  getButtonText,
+  validateTransferForm,
+} from "./utils";
 
 export const TransferModule = ({
   source,
@@ -59,6 +67,8 @@ export const TransferModule = ({
       namadaShieldedAssetsAtom
     : namadaTransparentAssetsAtom
   );
+  const shieldedAccount = useAtomValue(defaultShieldedAccountAtom);
+  const transparentAccount = useAtomValue(defaultTransparentAccountAtom);
   const [searchParams, setSearchParams] = useSearchParams();
   const asset = searchParams.get(params.asset) || "";
   const assetsWithAmounts = useAssetsWithAmounts(sourceAddress);
@@ -102,6 +112,12 @@ export const TransferModule = ({
       validationResult,
       availableAmountMinusFees,
       buttonTextErrors,
+      transactionType: determineTransferType({
+        sourceAddress,
+        destinationAddress,
+      }),
+      sourceAddress,
+      destinationAddress,
     });
   };
 
@@ -332,6 +348,18 @@ export const TransferModule = ({
           setAssetSelectorModalOpen(false);
         }}
       />
+      {isShielding && !isSubmitting && (
+        <div className="flex flex-row font-normal justify-center mt-10 gap-2">
+          <h4>Looking to Unshield tokens?</h4>
+          <Link
+            className="text-yellow underline"
+            to={`${routes.transfer}?${params.source}=${shieldedAccount?.address || ""}&${params.destination}=${transparentAccount?.address || ""}`}
+            title={`View pending transactions`}
+          >
+            Click here.
+          </Link>
+        </div>
+      )}
     </>
   );
 };
