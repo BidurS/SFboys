@@ -1,5 +1,8 @@
 
-chain_id = "namada.5f5de2dd1b88cba30586420"
-rpc_url = "https://namadillo.sfboysvalidator.com/rpc"
-indexer_url = "https://namadillo.sfboysvalidator.com/indexer"
-masp_indexer_url = "https://namadillo.sfboysvalidator.com/indexer"
+#chain_id = "namada.5f5de2dd1b88cba30586420"
+#rpc_url = "https://namadillo.sfboysvalidator.com/rpc"
+#indexer_url = "https://namadillo.sfboysvalidator.com/indexer"
+#masp_indexer_url = "https://namadillo.sfboysvalidator.com/indexer"
+# Uncomment the following lines to define your default indexer and rpc urls
+#indexer_url = ""
+#rpc_url = ""
