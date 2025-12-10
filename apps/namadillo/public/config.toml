@@ -1,8 +1,5 @@
-# Uncomment the following lines to define your default indexer and rpc urls
-indexer_url = "https://indexer.namada.net"
-rpc_url = "https://rpc.namada.net"
-masp_indexer_url = "https://masp.namada.net"
-#localnet_enabled = false
-#fathom_site_id = ""
-chain_id = "namada.5f5de2dd1b88cba30586420" 
-# (Note: Only add this if you are strictly on a specific testnet/mainnet, otherwise leave it out to let the RPC decide)
+# Use these exact values
+chain_id = "namada.5f5de2dd1b88cba30586420"
+indexer_url = "https://indexer.namada.tududes.com"
+rpc_url = "https://rpc.namada.tududes.com"
+masp_indexer_url = "https://masp-indexer.namada.tududes.com"
