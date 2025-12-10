@@ -1,5 +1,5 @@
-# Use these exact values
+
 chain_id = "namada.5f5de2dd1b88cba30586420"
-indexer_url = "https://indexer.namada.tududes.com"
-rpc_url = "https://rpc.namada.tududes.com"
-masp_indexer_url = "https://masp-indexer.namada.tududes.com"
+rpc_url = "https://namadillo.sfboysvalidator.com/rpc"
+indexer_url = "https://namadillo.sfboysvalidator.com/indexer"
+masp_indexer_url = "https://namadillo.sfboysvalidator.com/indexer"
