@@ -1,1 +1,4 @@
 /* /index.html 200
+
+/params/masp-spend.params https://github.com/anoma/namada-trusted-setup/releases/download/presentation/masp-spend.params 302
+/params/masp-output.params https://github.com/anoma/namada-trusted-setup/releases/download/presentation/masp-output.params 302
